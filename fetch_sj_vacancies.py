@@ -3,36 +3,42 @@ from dotenv import load_dotenv
 import os
 
 
-def fetch_sj_vacancies(sj_secret_key, sj_password):
-    # url = '	https://api.superjob.ru/2.0/oauth2/password/'
-    # payload = {
-    #     'login': 'aboohnifa@gmail.com',
-    #     'password': f'{sj_password}',
-    #     'client_id': '2146',
-    #     'client_secret': f'{sj_secret_key}',
-    #     }
-    # response = requests.post(url, data=payload)
-    # print(response.json())
+def auth_sj(sj_secret_key, sj_password):
+    url = '	https://api.superjob.ru/2.0/oauth2/password/'
+    payload = {
+        'login': 'aboohnifa@gmail.com',
+        'password': f'{sj_password}',
+        'client_id': '2146',
+        'client_secret': f'{sj_secret_key}',
+        }
+    response = requests.get(url, params=payload)
+    response.raise_for_status()
+    access_token = response.json()['access_token']
+    return access_token
+
+
+def fetch_sj_vacancies(sj_secret_key, access_token):
     url = 'https://api.superjob.ru/2.0/vacancies/'
     payload = {
-        'host': 'api.superjob.ru',
-        'X-Api-App-Id': f'{sj_secret_key}',
-        'Authorization': 'Bearer v3.r.137281259.7a56c95ed738cd460bf075beecbe60f6e0134222.a638230263e361a228d71f3b3931d7c5a8439c8d',
+        'Authorization': f'Bearer {access_token}',
         'app_key': f'{sj_secret_key}',
-        # 'Content-Type': 'application/x-www-form-urlencoded',
-        # 'keyword': 'программист',
+        'keyword': 'программист',
+        'town': '4',
         }
-    response = requests.post(url, data=payload)
-    print(response.text)
-    # response.raise_for_status()
+    response = requests.get(url, params=payload)
+    response.raise_for_status()
 
+    vacancies = response.json()['objects']
+    for vacancy in vacancies:
+        print(vacancy['profession'])
 
 
 def main():
     load_dotenv()
     sj_secret_key = os.environ['SUPER_JOB_SECRET_KEY']
     sj_password = os.environ['SUPER_JOB_ACCOUNT_PASSWORD']
-    fetch_sj_vacancies(sj_secret_key, sj_password)
+    access_token = auth_sj(sj_secret_key, sj_password)
+    fetch_sj_vacancies(sj_secret_key, access_token)
 
 
 if __name__ == '__main__':
