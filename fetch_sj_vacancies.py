@@ -17,7 +17,60 @@ def auth_sj(sj_secret_key, sj_password):
     return access_token
 
 
+def predict_rub_salary_for_superJob():
+    
+
 def fetch_sj_vacancies(sj_secret_key, access_token):
+    sj_vacancies = {
+        'Java': {
+            'vacancies_found': 0,
+            'vacancies_processed': 0,
+            'average_salary': 0,
+            },
+        'C': {
+            'vacancies_found': 0,
+            'vacancies_processed': 0,
+            'average_salary': 0,
+            },
+        'C++': {
+            'vacancies_found': 0,
+            'vacancies_processed': 0,
+            'average_salary': 0,
+            },
+        'C#': {
+            'vacancies_found': 0,
+            'vacancies_processed': 0,
+            'average_salary': 0,
+            },
+        'Python': {
+            'vacancies_found': 0,
+            'vacancies_processed': 0,
+            'average_salary': 0,
+            },
+        'PHP': {
+            'vacancies_found': 0,
+            'vacancies_processed': 0,
+            'average_salary': 0,
+            },
+        'JavaScript': {
+            'vacancies_found': 0,
+            'vacancies_processed': 0,
+            'average_salary': 0,
+            },
+        'Go': {
+            'vacancies_found': 0,
+            'vacancies_processed': 0,
+            'average_salary': 0,
+            },
+        'Swift': {
+            'vacancies_found': 0,
+            'vacancies_processed': 0,
+            'average_salary': 0,
+            },
+        }
+    languages = [
+        'Java', 'C', 'C++', 'C#', 'Python', 'PHP', 'JavaScript',  'Go', 'Swift'
+        ]
     url = 'https://api.superjob.ru/2.0/vacancies/'
     payload = {
         'Authorization': f'Bearer {access_token}',
@@ -30,7 +83,7 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
 
     vacancies = response.json()['objects']
     for vacancy in vacancies:
-        print(vacancy['profession'])
+        print(vacancy['profession'], vacancy['town']['title'])
 
 
 def main():
