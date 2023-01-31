@@ -1,10 +1,11 @@
-def get_hh_average_salary(salaries):
+def get_average_salary(salaries):
     vacancies_processed = 0
     sum_salary = 0
     for salary in salaries:
         if (
                 salary is None or
-                salary['currency'] != 'RUR' and salary['currency'] != 'rub'
+                salary['currency'] != 'RUR' and salary['currency'] != 'rub' or
+                not salary['from'] and not salary['to']
                 ):
             continue
         elif salary['from'] and salary['to']:

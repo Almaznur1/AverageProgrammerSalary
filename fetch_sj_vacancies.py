@@ -2,6 +2,7 @@ import requests
 from dotenv import load_dotenv
 import os
 from datetime import datetime
+from common_functions import get_average_salary
 
 
 def auth_sj(sj_secret_key, sj_password):
@@ -67,32 +68,51 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
             'average_salary': 0,
             },
         }
-    
+
     url = 'https://api.superjob.ru/2.0/vacancies/'
-    language = 'Python'
-    date_published_from = datetime.now() - datetime.fromtimestamp(MONTH_IN_SEC)
-    while True:
+    date_month_ago = datetime.now() - datetime.fromtimestamp(MONTH_IN_SEC)
+
+    for language in sj_vacancies:
         page = 0
-        for language in sj_vacancies:
+        vacancies_processed = 0
+        sum_salary = 0
+        average_salary = 0
+        while True:
             payload = {
                 'Authorization': f'Bearer {access_token}',
                 'app_key': f'{sj_secret_key}',
                 'keyword': f'программист {language}',
                 'town': '4',
-                'date_published_from': f'{date_published_from}',
+                'date_published_from': f'{date_month_ago}',
                 'page': f'{page}',
-                'count': '100',
                 }
             response = requests.get(url, params=payload)
             response.raise_for_status()
 
-        if response.json()['more']:
+            salaries_per_page = [
+                {
+                    'from': response.json()['objects'][i]['payment_from'],
+                    'to': response.json()['objects'][i]['payment_to'],
+                    'currency': response.json()['objects'][i]['currency'],
+                    }
+                for i in range(len(response.json()['objects']))
+                ]
+            for salary in salaries_per_page:
+                print(salary)
+            (
+                vacancies_processed_per_page, sum_salary_per_page
+                ) = get_average_salary(salaries_per_page)
+            vacancies_processed += vacancies_processed_per_page
+            sum_salary += sum_salary_per_page
+            if vacancies_processed != 0:
+                average_salary = sum_salary / vacancies_processed
+            if not response.json()['more']:
+                break
             page += 1
-        else:
-            break
-    vacancies = response.json()['objects']
-    for vacancy in vacancies:
-        print(vacancy['profession'], vacancy['town']['title'])
+        sj_vacancies[language]['vacancies_processed'] = vacancies_processed
+        sj_vacancies[language]['average_salary'] = int(average_salary)
+        sj_vacancies[language]['vacancies_found'] = response.json()['total']
+    return sj_vacancies
 
 
 def main():
@@ -100,7 +120,7 @@ def main():
     sj_secret_key = os.environ['SUPER_JOB_SECRET_KEY']
     sj_password = os.environ['SUPER_JOB_ACCOUNT_PASSWORD']
     access_token = auth_sj(sj_secret_key, sj_password)
-    fetch_sj_vacancies(sj_secret_key, access_token)
+    print(*fetch_sj_vacancies(sj_secret_key, access_token).items(), sep='\n')
 
 
 if __name__ == '__main__':
