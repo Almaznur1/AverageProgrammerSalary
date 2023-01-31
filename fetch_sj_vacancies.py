@@ -1,6 +1,7 @@
 import requests
 from dotenv import load_dotenv
 import os
+from datetime import datetime
 
 
 def auth_sj(sj_secret_key, sj_password):
@@ -17,10 +18,8 @@ def auth_sj(sj_secret_key, sj_password):
     return access_token
 
 
-def predict_rub_salary_for_superJob():
-    
-
 def fetch_sj_vacancies(sj_secret_key, access_token):
+    MONTH_IN_SEC = 2592000
     sj_vacancies = {
         'Java': {
             'vacancies_found': 0,
@@ -68,19 +67,29 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
             'average_salary': 0,
             },
         }
-    languages = [
-        'Java', 'C', 'C++', 'C#', 'Python', 'PHP', 'JavaScript',  'Go', 'Swift'
-        ]
+    
     url = 'https://api.superjob.ru/2.0/vacancies/'
-    payload = {
-        'Authorization': f'Bearer {access_token}',
-        'app_key': f'{sj_secret_key}',
-        'keyword': 'программист',
-        'town': '4',
-        }
-    response = requests.get(url, params=payload)
-    response.raise_for_status()
+    language = 'Python'
+    date_published_from = datetime.now() - datetime.fromtimestamp(MONTH_IN_SEC)
+    while True:
+        page = 0
+        for language in sj_vacancies:
+            payload = {
+                'Authorization': f'Bearer {access_token}',
+                'app_key': f'{sj_secret_key}',
+                'keyword': f'программист {language}',
+                'town': '4',
+                'date_published_from': f'{date_published_from}',
+                'page': f'{page}',
+                'count': '100',
+                }
+            response = requests.get(url, params=payload)
+            response.raise_for_status()
 
+        if response.json()['more']:
+            page += 1
+        else:
+            break
     vacancies = response.json()['objects']
     for vacancy in vacancies:
         print(vacancy['profession'], vacancy['town']['title'])
