@@ -82,11 +82,3 @@ def fetch_hh_vacancies():
         hh_vacancies[language]['average_salary'] = int(average_salary)
         hh_vacancies[language]['vacancies_found'] = response.json()['found']
     return hh_vacancies
-
-
-def main():
-    print(*fetch_hh_vacancies().items(), sep='\n')
-
-
-if __name__ == '__main__':
-    main()
