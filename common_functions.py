@@ -39,3 +39,4 @@ def print_table(vacancies, title):
     title = f'{title} Moscow'
     table_instance = SingleTable(table, title)
     print(table_instance.table)
+    print()

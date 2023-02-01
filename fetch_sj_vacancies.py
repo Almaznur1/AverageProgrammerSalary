@@ -3,12 +3,12 @@ from datetime import datetime
 from common_functions import get_average_salary
 
 
-def auth_sj(sj_secret_key, sj_password):
+def auth_sj(email, sj_password, app_id, sj_secret_key):
     url = '	https://api.superjob.ru/2.0/oauth2/password/'
     payload = {
-        'login': 'aboohnifa@gmail.com',
+        'login': f'{email}',
         'password': f'{sj_password}',
-        'client_id': '2146',
+        'client_id': f'{app_id}',
         'client_secret': f'{sj_secret_key}',
         }
     response = requests.get(url, params=payload)
@@ -49,6 +49,11 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
             'vacancies_processed': 0,
             'average_salary': 0,
             },
+        'Kotlin': {
+            'vacancies_found': 0,
+            'vacancies_processed': 0,
+            'average_salary': 0,
+            },              
         'JavaScript': {
             'vacancies_found': 0,
             'vacancies_processed': 0,

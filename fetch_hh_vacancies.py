@@ -34,6 +34,11 @@ def fetch_hh_vacancies():
             'vacancies_processed': 0,
             'average_salary': 0,
             },
+        'Kotlin': {
+            'vacancies_found': 0,
+            'vacancies_processed': 0,
+            'average_salary': 0,
+            },            
         'JavaScript': {
             'vacancies_found': 0,
             'vacancies_processed': 0,

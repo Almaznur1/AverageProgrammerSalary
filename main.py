@@ -12,9 +12,12 @@ def main():
     hh_vacancies = fetch_hh_vacancies()
     print_table(hh_vacancies, 'HeadHunter')
 
-    sj_secret_key = os.environ['SUPER_JOB_SECRET_KEY']
+    email = os.environ['SUPER_JOB_ACCOUNT_EMAIL']
     sj_password = os.environ['SUPER_JOB_ACCOUNT_PASSWORD']
-    access_token = auth_sj(sj_secret_key, sj_password)
+    app_id = os.environ['APP_ID']
+    sj_secret_key = os.environ['SUPER_JOB_SECRET_KEY']
+
+    access_token = auth_sj(email, sj_password, app_id, sj_secret_key)
     sj_vacancies = fetch_sj_vacancies(sj_secret_key, access_token)
     print_table(sj_vacancies, 'SuperJob')
 
