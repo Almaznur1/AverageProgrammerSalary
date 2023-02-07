@@ -24,7 +24,7 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
         ]
     sj_vacancies = {}
     MONTH_IN_SEC = 2592000
-    moscow_code = 4
+    moscow_code = '4'
     date_month_ago = datetime.now() - datetime.fromtimestamp(MONTH_IN_SEC)
     url = 'https://api.superjob.ru/2.0/vacancies/'
 
@@ -46,27 +46,26 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
             response = requests.get(url, params=payload)
             response.raise_for_status()
 
+            response = response.json()
             salaries_per_page = [
                 {
-                    'from': response.json()['objects'][i]['payment_from'],
-                    'to': response.json()['objects'][i]['payment_to'],
-                    'currency': response.json()['objects'][i]['currency'],
-                    }
-                for i in range(len(response.json()['objects']))
+                    'from': response['objects'][i]['payment_from'],
+                    'to': response['objects'][i]['payment_to'],
+                    'currency': response['objects'][i]['currency'],
+                    } for i in range(len(response['objects']))
                 ]
 
-            (
-                vacancies_processed_per_page, sum_salary_per_page
-                ) = get_average_salary(salaries_per_page)
+            (vacancies_processed_per_page,
+                sum_salary_per_page) = get_average_salary(salaries_per_page)
             vacancies_processed += vacancies_processed_per_page
             sum_salary += sum_salary_per_page
             if vacancies_processed != 0:
                 average_salary = sum_salary / vacancies_processed
-            if not response.json()['more']:
+            if not response['more']:
                 break
             page += 1
         sj_vacancies[language] = {}
         sj_vacancies[language]['vacancies_processed'] = vacancies_processed
         sj_vacancies[language]['average_salary'] = int(average_salary)
-        sj_vacancies[language]['vacancies_found'] = response.json()['total']
+        sj_vacancies[language]['vacancies_found'] = response['total']
     return sj_vacancies

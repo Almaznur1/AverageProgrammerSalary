@@ -19,19 +19,20 @@ def fetch_hh_vacancies():
         while True:
             payload = {
                 'text': f'Программист {language}',
-                'area': moscow_code, 'period': month, 'page': {page}
+                'area': moscow_code, 'period': month,
+                'page': {page}, 'per_page': '100'
                 }
             response = requests.get(url, params=payload)
             response.raise_for_status()
 
-            pages_number = response.json()['pages']
+            response = response.json()
+            pages_number = response['pages']
             salaries_per_page = [
-                response.json()['items'][i]['salary']
-                for i in range(len(response.json()['items']))
+                response['items'][i]['salary']
+                for i in range(len(response['items']))
                 ]
-            (
-                vacancies_processed_per_page, sum_salary_per_page
-                ) = get_average_salary(salaries_per_page)
+            (vacancies_processed_per_page,
+                sum_salary_per_page) = get_average_salary(salaries_per_page)
             vacancies_processed += vacancies_processed_per_page
             sum_salary += sum_salary_per_page
             page += 1
@@ -41,5 +42,5 @@ def fetch_hh_vacancies():
         hh_vacancies[language] = {}
         hh_vacancies[language]['vacancies_processed'] = vacancies_processed
         hh_vacancies[language]['average_salary'] = int(average_salary)
-        hh_vacancies[language]['vacancies_found'] = response.json()['found']
+        hh_vacancies[language]['vacancies_found'] = response['found']
     return hh_vacancies
