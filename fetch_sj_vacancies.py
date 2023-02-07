@@ -24,6 +24,7 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
         ]
     sj_vacancies = {}
     MONTH_IN_SEC = 2592000
+    moscow_code = 4
     date_month_ago = datetime.now() - datetime.fromtimestamp(MONTH_IN_SEC)
     url = 'https://api.superjob.ru/2.0/vacancies/'
 
@@ -38,7 +39,7 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
                 'Authorization': f'Bearer {access_token}',
                 'app_key': f'{sj_secret_key}',
                 'keyword': f'программист {language}',
-                'town': '4',
+                'town': moscow_code,
                 'date_published_from': f'{date_month_ago}',
                 'page': f'{page}',
                 }

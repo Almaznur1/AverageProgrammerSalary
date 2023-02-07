@@ -9,6 +9,8 @@ def fetch_hh_vacancies():
         ]
     hh_vacancies = {}
     url = 'https://api.hh.ru/vacancies/'
+    moscow_code = '1'
+    month = '30'
 
     for language in languages:
         page = 0
@@ -17,7 +19,7 @@ def fetch_hh_vacancies():
         while True:
             payload = {
                 'text': f'Программист {language}',
-                'area': '1', 'period': '30', 'page': {page}, 'per_page': '100'
+                'area': moscow_code, 'period': month, 'page': {page}
                 }
             response = requests.get(url, params=payload)
             response.raise_for_status()
