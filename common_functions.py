@@ -1,14 +1,14 @@
 from terminaltables import SingleTable
 
 
-def get_average_salary(salaries):
+def get_number_and_sum_of_avg_salaries(salaries):
     vacancies_processed = 0
     sum_salary = 0
     for salary in salaries:
         if (
-                salary is None or
-                salary['currency'] != 'RUR' and salary['currency'] != 'rub' or
-                not salary['from'] and not salary['to']
+                not salary
+                or salary['currency'] != 'RUR' and salary['currency'] != 'rub'
+                or not salary['from'] and not salary['to']
                 ):
             continue
         elif salary['from'] and salary['to']:
@@ -34,7 +34,8 @@ def print_table(vacancies, title):
         ]
     header = [
         'Язык программирования', 'Вакансий найдено',
-        'Вакансий обработано', 'Средняя зарплата']
+        'Вакансий обработано', 'Средняя зарплата'
+        ]
     table.insert(0, header)
     title = f'{title} Moscow'
     table_instance = SingleTable(table, title)

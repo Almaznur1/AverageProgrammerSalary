@@ -1,6 +1,6 @@
 import requests
 from datetime import datetime
-from common_functions import get_average_salary
+from common_functions import get_number_and_sum_of_avg_salaries
 
 
 def auth_sj(email, sj_password, app_id, sj_secret_key):
@@ -23,9 +23,9 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
         'PHP', 'Kotlin', 'JavaScript', 'Go', 'Swift'
         ]
     sj_vacancies = {}
-    MONTH_IN_SEC = 2592000
+    month_in_sec = 2592000
     moscow_code = '4'
-    date_month_ago = datetime.now() - datetime.fromtimestamp(MONTH_IN_SEC)
+    date_month_ago = datetime.now() - datetime.fromtimestamp(month_in_sec)
     url = 'https://api.superjob.ru/2.0/vacancies/'
 
     for language in languages:
@@ -55,11 +55,13 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
                     } for i in range(len(response['objects']))
                 ]
 
-            (vacancies_processed_per_page,
-                sum_salary_per_page) = get_average_salary(salaries_per_page)
+            (
+                vacancies_processed_per_page, sum_salary_per_page
+            ) = get_number_and_sum_of_avg_salaries(salaries_per_page)
+
             vacancies_processed += vacancies_processed_per_page
             sum_salary += sum_salary_per_page
-            if vacancies_processed != 0:
+            if vacancies_processed:
                 average_salary = sum_salary / vacancies_processed
             if not response['more']:
                 break

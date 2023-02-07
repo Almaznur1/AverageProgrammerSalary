@@ -1,5 +1,5 @@
 import requests
-from common_functions import get_average_salary
+from common_functions import get_number_and_sum_of_avg_salaries
 
 
 def fetch_hh_vacancies():
@@ -31,14 +31,17 @@ def fetch_hh_vacancies():
                 response['items'][i]['salary']
                 for i in range(len(response['items']))
                 ]
-            (vacancies_processed_per_page,
-                sum_salary_per_page) = get_average_salary(salaries_per_page)
+            (
+                vacancies_processed_per_page, sum_salary_per_page
+            ) = get_number_and_sum_of_avg_salaries(salaries_per_page)
+
             vacancies_processed += vacancies_processed_per_page
             sum_salary += sum_salary_per_page
             page += 1
             if page == pages_number:
                 break
-        average_salary = sum_salary / vacancies_processed
+        if vacancies_processed:
+            average_salary = sum_salary / vacancies_processed
         hh_vacancies[language] = {}
         hh_vacancies[language]['vacancies_processed'] = vacancies_processed
         hh_vacancies[language]['average_salary'] = int(average_salary)
