@@ -18,63 +18,16 @@ def auth_sj(email, sj_password, app_id, sj_secret_key):
 
 
 def fetch_sj_vacancies(sj_secret_key, access_token):
-    sj_vacancies = {
-        'Java': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'C': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'C++': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'C#': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'Python': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'PHP': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'Kotlin': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },              
-        'JavaScript': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'Go': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'Swift': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        }
+    languages = [
+        'Java', 'C', 'C++', 'C#', 'Python',
+        'PHP', 'Kotlin', 'JavaScript', 'Go', 'Swift'
+        ]
+    sj_vacancies = {}
     MONTH_IN_SEC = 2592000
     date_month_ago = datetime.now() - datetime.fromtimestamp(MONTH_IN_SEC)
     url = 'https://api.superjob.ru/2.0/vacancies/'
 
-    for language in sj_vacancies:
+    for language in languages:
         page = 0
         vacancies_processed = 0
         sum_salary = 0
@@ -111,6 +64,7 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
             if not response.json()['more']:
                 break
             page += 1
+        sj_vacancies[language] = {}
         sj_vacancies[language]['vacancies_processed'] = vacancies_processed
         sj_vacancies[language]['average_salary'] = int(average_salary)
         sj_vacancies[language]['vacancies_found'] = response.json()['total']

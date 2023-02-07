@@ -3,61 +3,14 @@ from common_functions import get_average_salary
 
 
 def fetch_hh_vacancies():
-    hh_vacancies = {
-        'Java': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'C': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'C++': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'C#': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'Python': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'PHP': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'Kotlin': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },            
-        'JavaScript': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'Go': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        'Swift': {
-            'vacancies_found': 0,
-            'vacancies_processed': 0,
-            'average_salary': 0,
-            },
-        }
+    languages = [
+        'Java', 'C', 'C++', 'C#', 'Python',
+        'PHP', 'Kotlin', 'JavaScript', 'Go', 'Swift'
+        ]
+    hh_vacancies = {}
     url = 'https://api.hh.ru/vacancies/'
 
-    for language in hh_vacancies:
+    for language in languages:
         page = 0
         vacancies_processed = 0
         sum_salary = 0
@@ -83,6 +36,7 @@ def fetch_hh_vacancies():
             if page == pages_number:
                 break
         average_salary = sum_salary / vacancies_processed
+        hh_vacancies[language] = {}
         hh_vacancies[language]['vacancies_processed'] = vacancies_processed
         hh_vacancies[language]['average_salary'] = int(average_salary)
         hh_vacancies[language]['vacancies_found'] = response.json()['found']
