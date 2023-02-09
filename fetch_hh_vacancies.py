@@ -16,11 +16,13 @@ def fetch_hh_vacancies():
         page = 0
         vacancies_processed = 0
         sum_salary = 0
+        average_salary = 0
+
         while True:
             payload = {
                 'text': f'Программист {language}',
                 'area': moscow_code, 'period': month,
-                'page': {page}, 'per_page': '100'
+                'page': page, 'per_page': '100'
                 }
             response = requests.get(url, params=payload)
             response.raise_for_status()
@@ -28,8 +30,8 @@ def fetch_hh_vacancies():
             response = response.json()
             pages_number = response['pages']
             salaries_per_page = [
-                response['items'][i]['salary']
-                for i in range(len(response['items']))
+                vacancy['salary']
+                for vacancy in response['items']
                 ]
             (
                 vacancies_processed_per_page, sum_salary_per_page

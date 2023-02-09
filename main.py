@@ -9,8 +9,8 @@ from common_functions import print_table
 def main():
     load_dotenv()
 
-    hh_vacancies = fetch_hh_vacancies()
-    print_table(hh_vacancies, 'HeadHunter')
+    # hh_vacancies = fetch_hh_vacancies()
+    # print_table(hh_vacancies, 'HeadHunter')
 
     email = os.environ['SUPER_JOB_ACCOUNT_EMAIL']
     sj_password = os.environ['SUPER_JOB_ACCOUNT_PASSWORD']

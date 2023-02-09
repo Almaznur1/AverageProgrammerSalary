@@ -41,7 +41,7 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
                 'keyword': f'программист {language}',
                 'town': moscow_code,
                 'date_published_from': f'{date_month_ago}',
-                'page': f'{page}',
+                'page': page,
                 }
             response = requests.get(url, params=payload)
             response.raise_for_status()
@@ -49,10 +49,10 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
             response = response.json()
             salaries_per_page = [
                 {
-                    'from': response['objects'][i]['payment_from'],
-                    'to': response['objects'][i]['payment_to'],
-                    'currency': response['objects'][i]['currency'],
-                    } for i in range(len(response['objects']))
+                    'from': vacancy['payment_from'],
+                    'to': vacancy['payment_to'],
+                    'currency': vacancy['currency'],
+                    } for vacancy in response['objects']
                 ]
 
             (
