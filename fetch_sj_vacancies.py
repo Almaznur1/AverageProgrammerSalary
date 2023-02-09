@@ -35,6 +35,7 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
         average_salary = 0
 
         while True:
+            salaries_per_page = []
             payload = {
                 'Authorization': f'Bearer {access_token}',
                 'app_key': f'{sj_secret_key}',
@@ -47,13 +48,14 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
             response.raise_for_status()
 
             response = response.json()
-            salaries_per_page = [
-                {
-                    'from': vacancy['payment_from'],
-                    'to': vacancy['payment_to'],
-                    'currency': vacancy['currency'],
-                    } for vacancy in response['objects']
-                ]
+            for vacancy in response['objects']:
+                salaries_per_page.append(
+                    {
+                        'from': vacancy['payment_from'],
+                        'to': vacancy['payment_to'],
+                        'currency': vacancy['currency']
+                        }
+                    )
 
             (
                 vacancies_processed_per_page, sum_salary_per_page
@@ -66,8 +68,9 @@ def fetch_sj_vacancies(sj_secret_key, access_token):
             if not response['more']:
                 break
             page += 1
-        sj_vacancies[language] = {}
-        sj_vacancies[language]['vacancies_processed'] = vacancies_processed
-        sj_vacancies[language]['average_salary'] = int(average_salary)
-        sj_vacancies[language]['vacancies_found'] = response['total']
+        sj_vacancies[language] = {
+            'vacancies_processed': vacancies_processed,
+            'average_salary': int(average_salary),
+            'vacancies_found': response['total']
+            }
     return sj_vacancies

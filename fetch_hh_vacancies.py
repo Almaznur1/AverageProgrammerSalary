@@ -44,8 +44,9 @@ def fetch_hh_vacancies():
                 break
         if vacancies_processed:
             average_salary = sum_salary / vacancies_processed
-        hh_vacancies[language] = {}
-        hh_vacancies[language]['vacancies_processed'] = vacancies_processed
-        hh_vacancies[language]['average_salary'] = int(average_salary)
-        hh_vacancies[language]['vacancies_found'] = response['found']
+        hh_vacancies[language] = {
+            'vacancies_processed': vacancies_processed,
+            'average_salary': int(average_salary),
+            'vacancies_found': response['found']
+            }
     return hh_vacancies
